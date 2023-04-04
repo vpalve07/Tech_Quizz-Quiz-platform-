@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(multer().any())
 
-mongoose.connect(process.env.MONGO_URL,{
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true
 })
     .then(() => console.log("MongoDB is connected"))
