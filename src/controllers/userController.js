@@ -38,4 +38,25 @@ const login = async function (req, res) {
     }
 }
 
-module.exports = { user, login }
+const forgotPass = async function(req,res){
+    try {
+        let data = req.body
+        let findUser = await userModel.findById(data.email)
+        if(!findUser) return res.status(400).send({status:false,msg:"User not found with provided email Id"})
+    } catch (error) {
+        return res.status(500).send({ status: false, msg: error.message })
+    }
+}
+
+const updateUser = async function(req,res){
+    try {
+        let data = req.body
+        let updateData = await userModel.findOneAndUpdate({_id:req.params.userId,isDeleted:false},data,{new:true})
+        if(!updateData) return res.status(400).send({status:false,msg:"User not found"})
+        return res.status(200).send({status:true,msg:"Data updated successfully"})
+    } catch (error) {
+        return res.status(500).send({ status: false, msg: error.message })
+    }
+}
+
+module.exports = { user, login, forgotPass, updateUser }

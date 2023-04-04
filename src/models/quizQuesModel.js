@@ -1,35 +1,39 @@
 const mongoose = require("mongoose")
+const ObjectId = mongoose.Schema.Types.ObjectId
 
-const user = new mongoose.Schema({
-    name:{
+const ques = new mongoose.Schema({
+    quizId:{
+        type:ObjectId,
+        ref:'Quiz'
+    },
+	question:{
         type:String,
         required:true
     },
-    email:{
+	op1:{
         type:String,
         required:true
     },
-    password:{
+	op2:{
         type:String,
         required:true
     },
-    role:{
-        type:String,
-        enum:['jobSeeker','Organizer'],
-        required:true
-    },
-    country:{
+	op3:{
         type:String,
         required:true
     },
-    phone:{
+	op4:{
         type:String,
         required:true
     },
-    isDeleted:{
-        type:Boolean,
-        default:false
+	ans:{
+        type:String,
+        required:true
+    },
+	TimeLimit:{
+        type:Number,
+        required:true
     }
 },{timestamps:true})
 
-module.exports = mongoose.model("User",user)
+module.exports = mongoose.model("QuizQuestions",ques)
