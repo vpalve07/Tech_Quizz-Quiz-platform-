@@ -7,6 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vpalve07/Tech_Quizz-Quiz-platform-.git"
+  },
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=16.0.0 <17.0.0"
+  },
   "author": "Vinayak Palve",
   "license": "ISC",
   "dependencies": {
