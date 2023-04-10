@@ -9,13 +9,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(multer().any())
 
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true
-})
+mongoose.connect(process.env.mongo_url, {useNewUrlParser: true})
     .then(() => console.log("MongoDB is connected"))
     .catch(err => console.log(err))
 
 app.use("/", route)
-app.listen(process.env.PORT, function () {
-    console.log("Express app running")
+app.listen(process.env.port, function () {
+    console.log(`Express app running on ${process.env.port}`)
 })

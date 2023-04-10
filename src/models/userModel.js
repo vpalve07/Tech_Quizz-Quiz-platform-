@@ -13,23 +13,25 @@ const user = new mongoose.Schema({
         type:String,
         required:true
     },
-    role:{
+    type:{
         type:String,
-        enum:['jobSeeker','Organizer'],
+        enum:['jobSeeker','organizer'],
         required:true
     },
-    country:{
-        type:String,
-        required:true
+    currentCompony:{
+        type:String
     },
-    phone:{
-        type:String,
-        required:true
-    },
-    isDeleted:{
-        type:Boolean,
-        default:false
+    secretQuestion:{
+        question:{
+            type:String,
+            required:true
+        },
+        answer:{
+            type:String,
+            required:true
+        }
     }
+        
 },{timestamps:true})
 
 module.exports = mongoose.model("User",user)

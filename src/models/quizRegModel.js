@@ -12,15 +12,31 @@ const register = new mongoose.Schema({
     },
 	name:{
         type:String,
-        required:true
+        // required:true
     },
 	score:{
         type:Number,
         default:0
     },
-	startTime:{
-        type:Date,
-        required:true
+    isAttempted:{
+        type:Boolean,
+        default:false
+    },
+	correctAns:{
+        type:Number,
+        default:0
+    },
+    wrongAns:{
+        type:Number,
+        default:0
+    },
+    totalQueAttempted:{
+        type:Number,
+        default:0
+    },
+    totalQueUnAttempted:{
+        type:Number,
+        default:0
     }
 },{timestamps:true})
 
