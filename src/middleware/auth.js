@@ -32,7 +32,7 @@ const validateToken = function (req, res, next) {
   try {
     let token = req.headers['x-api-key']
     if (!token) return res.status(400).send({ status: false, message: "Token is required" })
-    jwt.verify(token, "FsocTechQuiz", function (err, decode) {
+    jwt.verify(token, process.env.secret_key, function (err, decode) {
       if (err) return res.status(400).send({ status: false, message: "Authentication Failed" })
       req.decode = decode
       next()

@@ -64,7 +64,7 @@ const login = async function (req, res) {
         bcrypt.compare(password, userData.password, (err, pass) => {
             if (err) throw err
             if (pass) {
-                let token = jwt.sign({ userId: userData._id.toString(), emailId: userData.email , type:userData.type},"FsocTechQuiz")    //, {expiresIn:'1m'}
+                let token = jwt.sign({ userId: userData._id.toString(), emailId: userData.email , type:userData.type},process.env.secret_key)    //, {expiresIn:'1m'}
                 res.setHeader("x-api-key", token)
                 return res.status(200).send({ status: true, message: "User Logged in successfully",token:token})
             }else{
