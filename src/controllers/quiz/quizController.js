@@ -129,4 +129,9 @@ const updateQuiz = async function(req,res){
 }
 
 
+const quizDetails = async function(req,res){
+    let data = req.body.quizId
+    
+}
+
 module.exports = {quiz,regQuiz,quizQuestions, activate, updateQuiz}
