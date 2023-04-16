@@ -21,33 +21,33 @@ const TTL_ASYNC = promisify(client.TTL).bind(client);
 
 const objectIdCheck = function (req, res, next) {
   try {
-    if (req.params.quizId && !mongoose.isValidObjectId(req.params.quizId)) return res.status(400).send({ status: false, msg: "Invalid quizId" })
+    if (req.params.quizId && !mongoose.isValidObjectId(req.params.quizId)) return res.status(400).send({ status: false, message: "Invalid quizId" })
     next()
   } catch (error) {
-    return res.status(500).send({ status: false, msg: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 
 const validateToken = function (req, res, next) {
   try {
     let token = req.headers['x-api-key']
-    if (!token) return res.status(400).send({ status: false, msg: "Token is required" })
+    if (!token) return res.status(400).send({ status: false, message: "Token is required" })
     jwt.verify(token, "FsocTechQuiz", function (err, decode) {
-      if (err) return res.status(400).send({ status: false, msg: "Authentication Failed" })
+      if (err) return res.status(400).send({ status: false, message: "Authentication Failed" })
       req.decode = decode
       next()
     })
   } catch (error) {
-    return res.status(500).send({ status: false, msg: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 
 const organizerAuth = function (req, res, next) {
   try {
-    if (req.decode.type != 'organizer') return res.status(400).send({ status: false, Message: "You don't have authorization to create a quiz and its questions" })
+    if (req.decode.type != 'organizer') return res.status(400).send({ status: false, message: "You don't have authorization to create a quiz and its questions" })
     next()
   } catch (error) {
-    return res.status(500).send({ status: false, msg: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 
@@ -55,7 +55,8 @@ const timer = async function (req, res, next) {
   const quizId = req.params.quizId;
   const userId = req.decode.userId;
   if (req.start == "start") {
-    let findQuiz = await quizModel.findById(quizId)
+    let findQuiz = await quizModel.findOne({_id:quizId})
+    if(!findQuiz) return res.status(400).send({status:false,message:"Quiz Id is missing"})
     let time = findQuiz.timeLimit
     let attempted = await quizRegModel.findOne({ userId: userId, quizId: quizId })
     if (!attempted) return res.status(400).send({ status: false, message: "You haven't registered for this quiz" })

@@ -6,13 +6,13 @@ const {isValidName,isValidEmail,passwordVal,isValidQuestion,isValidAnswer} = req
 const user = async function (req, res) {
     try {
         let data = req.body
-        if(!data.name) return res.status(400).send({ status: false, msg: "name is mandatory" })
-        if(!data.email) return res.status(400).send({ status: false, msg: "email is mandatory" })
-        if(!data.password) return res.status(400).send({ status: false, msg: "password is mandatory" })
-        if(!data.type) return res.status(400).send({ status: false, msg: "type is mandatory" })
-        if(!data.secretQuestion) return res.status(400).send({ status: false, msg: "secret Question and answer is mandatory" })
-        if(!data.secretQuestion.question) return res.status(400).send({ status: false, msg: "secret Question is mandatory" })
-        if(!data.secretQuestion.answer) return res.status(400).send({ status: false, msg: "answer for secret Question is mandatory" })
+        if(!data.name) return res.status(400).send({ status: false, message: "name is mandatory" })
+        if(!data.email) return res.status(400).send({ status: false, message: "email is mandatory" })
+        if(!data.password) return res.status(400).send({ status: false, message: "password is mandatory" })
+        if(!data.type) return res.status(400).send({ status: false, message: "type is mandatory" })
+        // if(!data.secretQuestion) return res.status(400).send({ status: false, message: "secret Question and answer is mandatory" })
+        // if(!data.secretQuestion.question) return res.status(400).send({ status: false, message: "secret Question is mandatory" })
+        // if(!data.secretQuestion.answer) return res.status(400).send({ status: false, message: "answer for secret Question is mandatory" })
 
         if (!isValidName(data.name)) return res.status(400).send({ status: false, message: "name is Invalid" });
         data.name = data.name.trim()
@@ -25,14 +25,13 @@ const user = async function (req, res) {
 
         let typeEnum = userModel.schema.obj.type.enum
         if (!typeEnum.includes(data.type)) {
-           return res.status(400).send({ status: false, msg: "type should be jobSeeker or organizer" })
+           return res.status(400).send({ status: false, message: "type should be jobSeeker or organizer" })
         }
-
         if (!isValidQuestion(data.secretQuestion.question)) return res.status(400).send({ status: false, message: "secret question is Invalid and can only contain 1000 characters without numerical values" });
         if (!isValidAnswer(data.secretQuestion.answer)) return res.status(400).send({ status: false, message: "secret answer is Invalid and can only contain 30 characters without numerical values" });
         
         let findEmail = await userModel.findOne({email:data.email})
-        if(findEmail) return res.status(403).send({status:false,msg:"Email Id is already exist"})
+        if(findEmail) return res.status(403).send({status:false,message:"Email Id is already exist"})
 
         const saltRounds = data.password.length
         let hash = await bcrypt.hash(data.password, saltRounds)
@@ -43,9 +42,9 @@ const user = async function (req, res) {
 
         let createUser = await userModel.create(data)
 
-        return res.status(201).send({ status: true, Message: "Sign Up successfully" })
+        return res.status(201).send({ status: true, message: "Sign Up successfully" })
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -53,8 +52,8 @@ const login = async function (req, res) {
     try {
         let data = req.body
         let { email, password } = data
-        if (!email) return res.status(400).send({ status: false, msg: "email id is required for login" })
-        if (!password) return res.status(400).send({ status: false, msg: "password is required for login" })
+        if (!email) return res.status(400).send({ status: false, message: "email id is required for login" })
+        if (!password) return res.status(400).send({ status: false, message: "password is required for login" })
 
         if (!isValidEmail(data.email)) return res.status(400).send({ status: false, message: "email format is Invalid" });
 
@@ -65,29 +64,29 @@ const login = async function (req, res) {
         bcrypt.compare(password, userData.password, (err, pass) => {
             if (err) throw err
             if (pass) {
-                let token = jwt.sign({ userId: userData._id.toString(), emailId: userData.email , type:userData.type},"FsocTechQuiz")
+                let token = jwt.sign({ userId: userData._id.toString(), emailId: userData.email , type:userData.type},"FsocTechQuiz")    //, {expiresIn:'1m'}
                 res.setHeader("x-api-key", token)
-                return res.status(200).send({ status: true, message: "User Logged in successfully"})
+                return res.status(200).send({ status: true, message: "User Logged in successfully",token:token})
             }else{
                 return res.status(400).send({ status: false, message: "Password is wrong" })
               }
         })
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
 const forgotPass = async function(req,res){
     try {
         let data = req.body
-        if(!data.email) return res.status(400).send({ status: false, msg: "email is mandatory" })
+        if(!data.email) return res.status(400).send({ status: false, message: "email is mandatory" })
         if (!isValidEmail(data.email)) return res.status(400).send({ status: false, message: "email format is Invalid" });
         let findUser = await userModel.findOne({email:data.email})
-        if(!findUser) return res.status(400).send({status:false,msg:"User not found with provided email Id"})
+        if(!findUser) return res.status(400).send({status:false,message:"User not found with provided email Id"})
         data.secretQuestion = findUser.secretQuestion.question
         return res.status(200).send({status:true,data:data})
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -95,19 +94,19 @@ const resetPass = async function(req,res){
     try {
         let data = req.body
     
-        if(!data.email) return res.status(400).send({ status: false, msg: "email is mandatory" })
-        if(!data.secretQuestion) return res.status(400).send({ status: false, msg: "secret Question is mandatory" })
-        if(!data.answer) return res.status(400).send({ status: false, msg: "answer for secret Question is mandatory" })
+        if(!data.email) return res.status(400).send({ status: false, message: "email is mandatory" })
+        if(!data.secretQuestion) return res.status(400).send({ status: false, message: "secret Question is mandatory" })
+        if(!data.answer) return res.status(400).send({ status: false, message: "answer for secret Question is mandatory" })
     
         let findUser = await userModel.findOne({email:data.email})
-        if(!findUser) return res.status(400).send({status:false,msg:"User not found with provided email Id"})
+        if(!findUser) return res.status(400).send({status:false,message:"User not found with provided email Id"})
         
-        if(data.secretQuestion!=findUser.secretQuestion.question) return res.status(400).send({status:false,Message:"Given Question is wrong"})
+        if(data.secretQuestion!=findUser.secretQuestion.question) return res.status(400).send({status:false,message:"Given Question is wrong"})
     
         let answer = await bcrypt.compare(data.answer,findUser.secretQuestion.answer)
-        if(!answer) return res.status(400).send({status:false,Message:"Given Answer is wrong"})
-    
-        if(!data.newPassword) return res.status(400).send({ status: false, msg: "newPassword is mandatory" })
+        if(!answer) return res.status(400).send({status:false,message:"Given Answer is wrong"})
+        
+        if(!data.newPassword) return res.status(400).send({ status: false, message: "newPassword is mandatory" })
     
         if (!passwordVal(data.newPassword)) return res.status(400).send({ status: false, message: "Password must be at least 1 lowercase, at least 1 uppercase,contain at least 1 numeric character , at least one special character, range between 8-15"});
         data.newPassword = data.newPassword.trim()
@@ -117,9 +116,9 @@ const resetPass = async function(req,res){
         data.newPassword = hash
     
         let updatePass = await userModel.findOneAndUpdate({email:data.email},{password:data.newPassword},{new:true})
-        return res.status(200).send({status:true,Message:"Password Changed Successfully"})
+        return res.status(200).send({status:true,message:"Password Changed Successfully"})
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -149,11 +148,18 @@ const updateUser = async function(req,res){
 
         let updateData = await userModel.findOneAndUpdate({_id:req.decode.userId},obj,{new:true})
 
-        if(!updateData) return res.status(400).send({status:false,msg:"User not found"})
-        return res.status(200).send({status:true,msg:"Data updated successfully"})
+        if(!updateData) return res.status(400).send({status:false,message:"User not found"})
+        return res.status(200).send({status:true,message:"Data updated successfully"})
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
-module.exports = { user, login, forgotPass, resetPass, updateUser }
+const userDetails = async function(req,res){
+    let userId = req.decode.userId
+    let findUser = await userModel.findById(userId).select({name:1,email:1,type:1,_id:0})
+    return res.send(findUser)
+
+}
+
+module.exports = { user, login, forgotPass, resetPass, updateUser, userDetails }

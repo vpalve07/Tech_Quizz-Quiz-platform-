@@ -15,7 +15,7 @@ const startQuiz = async function(req,res){
         // await SET_ASYNC(`${req.decode.userId}-${req.params.quizId}`, time*60, `${req.params.quizId}`)
         return res.status(200).send({status:true,message:"Quiz is starting"})
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -24,10 +24,13 @@ const questions = async function(req,res){
         let quizId = req.params.quizId
         let page = req.query.page        //*page-1
         let userId = req.decode.userId
+        if(Object.entries(req.body).length>0){
         if(req.body.questionId!=""&&req.body.answer!=""&&req.body.marks>0){
-            let checkAns = await quizQuesModel.findOne({_id:req.body.questionId,quizId:quizId})
-            
-            if(req.body.answer==checkAns.ans){
+            let checkAns = await quizQuesModel.findOne({_id:req.body.questionId,quizId:quizId}).lean()
+            if(!checkAns) return res.status(400).send({status:false,message:"Quiz Question not found"})
+            let answer = Object.entries(checkAns.options)
+            let finalAns = answer[checkAns.ans-1][1]
+            if(req.body.answer==finalAns){
                 let updateScore = await quizRegModel.findOneAndUpdate({quizId:quizId,userId:userId},{$inc: { score: req.body.marks , correctAns:1, totalQueAttempted:1}},{new:true})
             }else{
                 let updateScore = await quizRegModel.findOneAndUpdate({quizId:quizId,userId:userId},{$inc: { wrongAns:1,totalQueAttempted:1}},{new:true})
@@ -36,6 +39,7 @@ const questions = async function(req,res){
         if(req.body.questionId!=""&&req.body.answer==""&&req.body.marks>0){
             let updateUnAttempted = await quizRegModel.findOneAndUpdate({quizId:quizId,userId:userId},{$inc: { totalQueUnAttempted:1}},{new:true})
         }
+    }
         let findQuestions = await quizQuesModel.find({quizId:quizId}).skip(1*page-1).limit(1).select({question:1,options:1,marks:1})    //_id:0
 
         if(findQuestions.length==0) return res.status(404).send({status:false,message:"Quiz completed"})
@@ -43,7 +47,7 @@ const questions = async function(req,res){
         return res.status(200).send({status:true,message:"question",data:findQuestions})
         
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -62,7 +66,7 @@ const submit = async function(req,res){
         obj.totalQuestionsAttempted = findQuizReg.totalQueAttempted
         return res.status(200).send({status:true,data:obj})
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
