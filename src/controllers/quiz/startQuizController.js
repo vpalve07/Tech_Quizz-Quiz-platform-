@@ -62,7 +62,7 @@ const submit = async function(req,res){
         obj.myTotalScore = findQuizReg.score
         obj.totalCorrectAnswer = findQuizReg.correctAns
         obj.totalWrongAnswer = findQuizReg.wrongAns
-        obj.totalQuestions = findQuizReg.totalQueAttempted+findQuizReg.totalQueUnAttempted
+        // obj.totalQuestions = findQuizReg.totalQueAttempted+findQuizReg.totalQueUnAttempted
         obj.totalQuestionsAttempted = findQuizReg.totalQueAttempted
         return res.status(200).send({status:true,data:obj})
     } catch (error) {

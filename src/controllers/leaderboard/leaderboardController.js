@@ -1,4 +1,5 @@
 const userModel = require("../../models/userModel")
+const quizModel = require("../../models/quizModel")
 const quizRegModel = require("../../models/quizRegModel")
 
 const leaderboard = async function(req,res){
