@@ -88,7 +88,7 @@ const activate = async function(req,res){
         let findQuizQues = await quizQuesModel.find({quizId:quizId})
         if(findQuizQues.length<5) return res.status(400).send({status:false,message:"Minimum 5 questions should be registered in this quiz to activate it"})
         let activateQuiz = await quizModel.findOneAndUpdate({_id:quizId,isDeleted:false,isActive:false},{isActive:true},{new:true})
-        if(!activateQuiz) return res.status(400).send({status:false,message:"Quiz is either already activated or does not exist"})
+        if(!activateQuiz) return res.status(400).send({status:false,message:"Quiz is already activated"})
         return res.status(200).send({status:true,message:"Quiz is activated"})
     }catch(error){
         return res.status(500).send({ status: false, message: error.message })
