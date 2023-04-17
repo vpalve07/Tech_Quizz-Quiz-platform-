@@ -13,7 +13,7 @@ const jobSeekerQuizzes = async function(req,res){
 
 const organizerQuizzes = async function(req,res){
     try {
-        let findQuizes = await quizModel.find({userId:req.decode.userId}).select({quizName:1,quizType:1,timeLimit:1,topicTags:1,totalScore:1,isActive:1,_id:1})
+        let findQuizes = await quizModel.find({userId:req.decode.userId}).select({quizName:1,quizType:1,timeLimit:1,topicTags:1,totalScore:1,isActive:1,_id:1}).sort({updatedAt:-1})
         if(findQuizes.length==0) return res.status(404).send({ status: false, message: "No past quizzes" })
         return res.status(200).send({status:true,data:findQuizes})
     } catch (error) {
