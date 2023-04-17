@@ -99,6 +99,7 @@ const updateQuiz = async function(req,res){
     try{
         let quizId = req.params.quizId
         let data = req.body
+        // if(Object.entries(req.body).length == 0) return res.status(400).send({status:false,message:"Can not update quiz without data"})
         let obj = {}
         if (data.quizName&&!isValidAnswer(data.quizName)) return res.status(400).send({ status: false, message: "quizName is Invalid and can only contain 30 characters" });
         let quizTypeEnum = quizModel.schema.obj.quizType.enum
@@ -128,10 +129,5 @@ const updateQuiz = async function(req,res){
     }
 }
 
-
-const quizDetails = async function(req,res){
-    let data = req.body.quizId
-    
-}
 
 module.exports = {quiz,regQuiz,quizQuestions, activate, updateQuiz}
