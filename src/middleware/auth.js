@@ -76,7 +76,7 @@ const timer = async function (req, res, next) {
       obj.totalWrongAnswer = findQuizReg.wrongAns
       // obj.totalQuestions = findQuizReg.totalQueAttempted+findQuizReg.totalQueUnAttempted
       obj.totalQuestionsAttempted = findQuizReg.totalQueAttempted
-      return res.status(200).send({ status: true, data:obj})
+      return res.status(200).send({ status: true, data:obj, timer:expiry})
     }
     next()
   }
