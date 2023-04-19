@@ -13,7 +13,7 @@ const startQuiz = async function(req,res){
         let findRegUser = await quizRegModel.findOneAndUpdate({userId:req.decode.userId,quizId:quizId},{isAttempted:true},{new:true})
         if(!findRegUser) return res.status(404).send({status:false,message:"You haven't registered for this quiz"})
         // await SET_ASYNC(`${req.decode.userId}-${req.params.quizId}`, time*60, `${req.params.quizId}`)
-        return res.status(200).send({status:true,message:"Quiz is starting"})
+        return res.status(200).send({status:true,message:"Quiz is starting",time:time})
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
