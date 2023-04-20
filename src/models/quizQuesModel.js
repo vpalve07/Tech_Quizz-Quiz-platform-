@@ -10,27 +10,16 @@ const ques = new mongoose.Schema({
         type:String,
         required:true
     },
-	op1:{
-        type:String,
-        required:true
-    },
-	op2:{
-        type:String,
-        required:true
-    },
-	op3:{
-        type:String,
-        required:true
-    },
-	op4:{
-        type:String,
+	options:{
+        type:Map,
+        of:String,
         required:true
     },
 	ans:{
-        type:String,
+        type:Number,
         required:true
     },
-	TimeLimit:{
+    marks:{
         type:Number,
         required:true
     }

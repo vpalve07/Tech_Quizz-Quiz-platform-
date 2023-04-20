@@ -1,28 +1,21 @@
 const mongoose = require("mongoose")
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const quiz = mongoose.Schema({
     quizName:{
         type:String,
         required:true
     },
+    userId:{
+        type:ObjectId,
+        ref:"User"
+    },
 	quizType:{
         type:String,
-        enum:['MCQ','etc']
+        enum:['MCQ']
     },
-	quizTime:{
+	timeLimit:{
         type:Number,
-        required:true
-    },
-    // startTime:{
-    //     type:Date,
-    //     required:true
-    // },
-    // endTime:{
-    //     type:Date,
-    //     required:true
-    // },
-	compName:{
-        type:String,
         required:true
     },
 	topicTags:{
@@ -31,9 +24,21 @@ const quiz = mongoose.Schema({
     },
 	totalScore:{
         type:Number,
-        required:true
+        default:0
+    },
+    isActive:{
+        type:Boolean,
+        default:false
+    },
+    isDeleted:{
+        type:Boolean,
+        default:false
     }
 
 },{timestamps:true})
+
+quiz.virtual('timeLimitInMinutes').get(function() {
+    return this.timeLimit / 60;
+});
 
 module.exports = mongoose.model("Quiz",quiz)
